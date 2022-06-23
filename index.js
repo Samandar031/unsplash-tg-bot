@@ -1,9 +1,12 @@
+// const { Telegraf } = require("telegraf");
 const TelegramApi = require("node-telegram-bot-api");
+
 const { start } = require("repl");
 
 const api = "5198351306:AAHQn8OM_VujZd7Igj8nn8hm5yyncBRGjjE";
-const key = `_zxs0wgdXXcjbmhYUmaOI4usuuCtQttL6zhRvMcQTFw`;
 const unsplashApi = `https://api.unsplash.com/photos/?client_id=${key}`;
+
+const key = `_zxs0wgdXXcjbmhYUmaOI4usuuCtQttL6zhRvMcQTFw`;
 
 const bot = new TelegramApi(api, { polling: true });
 
@@ -24,12 +27,23 @@ const startApi = function () {
         "https://tlgrm.eu/_/stickers/8a1/9aa/8a19aab4-98c0-37cb-a3d4-491cb94d7e12/2.webp"
       );
       return bot.sendMessage(chatId, `Assalomu alaykum ${name} `);
-      console.log(msg);
-    } else {
+      console.log(chatId);
+    } else if (text == "salom") {
       return bot.sendMessage(chatId, "salom");
+    } else {
+      return bot.sendMessage(
+        chatId,
+        `men bu narsani bilmayman ${name} tushindingmi`
+      );
     }
-    return bot.sendMessage(chatId, "men bu narsani bilmayman");
   });
 };
 
 startApi();
+
+const botI = new Telegraf(process.env.BOT_TOKEN);
+bot.start((ctx) => ctx.reply("Welcome"));
+bot.help((ctx) => ctx.reply("Send me a sticker"));
+bot.on("sticker", (ctx) => ctx.reply("👍"));
+bot.hears("hi", (ctx) => ctx.reply("Hey there"));
+bot.launch();
