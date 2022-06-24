@@ -19,7 +19,9 @@
   },
   "homepage": "https://github.com/samandarqodirqulov/first-telegram-bot#readme",
   "dependencies": {
+    "dotenv": "^16.0.1",
     "node-telegram-bot-api": "^0.56.0",
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "sequelize": "^6.21.0"
   }
 }
