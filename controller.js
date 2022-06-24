@@ -58,14 +58,14 @@ module.exports = class Controllers {
     console.log(state);
     console.log(message);
 
-    // bot.sendMessage(chat_id, "Raqamingizni pastdagi tugma orqali kiriting", {
-    //   reply_markup: {
-    //     keyboard: keyboards.setPhoneKeyboard,
-    //     resize_keyboard: true,
-    //     one_time_keyboard: true,
-    //     remove_keyboard: false,
-    //   },
-    // });
+    bot.sendMessage(chat_id, "Raqamingizni pastdagi tugma orqali kiriting", {
+      // reply_markup: {
+      //   keyboard: keyboards.setPhoneKeyboard,
+      //   resize_keyboard: true,
+      //   one_time_keyboard: true,
+      //   remove_keyboard: false,
+      // },
+    });
     bot.on("callback_query", (msg) => {
       console.log(msg);
     });

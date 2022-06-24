@@ -51,14 +51,134 @@
 // ___________________ >< telegram bot >< ___________________ //
 
 const TelegramBot = require("node-telegram-bot-api");
-const Controllers = require("./controller.js");
+// const Controllers = require("./controller.js");
 // const { TOKEN } = require("./config.js ");
 TOKEN = "5260210419:AAGsfX1ljPa7XK-iNiG7XfcfUfGVXGtmrIA";
 console.log(TOKEN);
+const keyboards = require("./keyboard.js");
+
 const options = {
   polling: true,
 };
 
+let step = 0;
+let state = [];
+
 const bot = new TelegramBot(TOKEN, options);
 
-bot.on("message", (message) => Controllers.MessageController(message, bot));
+bot.on("message", async (message) => {
+  step++;
+
+  bot.setMyCommands([
+    { command: "/start", description: "botni boshlash" },
+    { command: "/info", description: "bu malumotlaringiz" },
+  ]);
+
+  const chat_id = message.chat.id;
+  const user_id = message.from.id;
+  const text = message.text;
+  const first_name = message.chat.first_name;
+  const user_name = message.chat.username;
+
+  const buttonOption = {
+    reply_markup: JSON.stringify({
+      inline_keyboard: [
+        [
+          { text: "JavaScript", callback_data: "JavaScript" },
+          { text: "Python", callback_data: "Python" },
+          { text: "Php", callback_data: "Php" },
+        ],
+        [
+          { text: "C++", callback_data: "C++" },
+          { text: "Java", callback_data: "Java" },
+          { text: "Swift", callback_data: "Swift" },
+        ],
+        [
+          { text: "Go", callback_data: "Go" },
+          { text: "DevOps", callback_data: "DevOps" },
+          { text: ".Net", callback_data: ".Net" },
+        ],
+      ],
+    }),
+  };
+
+  // bot.sendMessage(chat_id, "Raqamingizni pastdagi tugma orqali kiriting", {
+  //
+  // });
+  console.log(message);
+
+  state.push(text);
+  if (step == 1) {
+    return await bot.sendMessage(chat_id, "ismingizni kiriting");
+  } else if (step == 2) {
+    return await bot.sendMessage(chat_id, "familiyangizni kiriting");
+  } else if (step == 3) {
+    return await bot.sendMessage(chat_id, "yoshingizni kiriting");
+  } else if (step == 4) {
+    return await bot.sendMessage(
+      chat_id,
+      "O'qimoqchi bo'lgan tilingizni kiriting",
+      buttonOption
+    );
+  } else if (step == 7) {
+    let option = {
+      parse_mode: "Markdown",
+      reply_markup: {
+        one_time_keyboard: true,
+        keyboard: [
+          [{ text: "My location", request_location: true }, { text: "Canel" }],
+        ],
+
+        resize_keyboard: true,
+        remove_keyboard: false,
+      },
+    };
+    return bot.sendMessage(chat_id, "Manzilingizni kiriting", option);
+  } else if (step == 8) {
+    return bot.sendMessage(chat_id, "E'tiboringiz uchun rahmat");
+    return bot.sendMessage(
+      chat_id,
+      `${(state[0], state[1], state[2], state[3])}`
+    );
+  }
+
+  console.log(state);
+  // console.log(step);
+});
+
+bot.on("callback_query", async (msg) => {
+  step++;
+
+  // console.log(msg);
+
+  const data = msg.data;
+  const chatId = msg.message.chat.id;
+  state.push(msg.data);
+
+  return bot.sendMessage(chatId, "nomeringizni kiriting", {
+    reply_markup: {
+      keyboard: keyboards.setPhoneKeyboard,
+
+      resize_keyboard: true,
+      one_time_keyboard: true,
+      remove_keyboard: false,
+    },
+  });
+});
+
+bot.on("contact", async (msg) => {
+  step++;
+  console.log(msg);
+  state.push(msg.contact.phone_number);
+
+  let option = {
+    parse_mode: "Markdown",
+    reply_markup: {
+      one_time_keyboard: true,
+      keyboard: [
+        [{ text: "My location", request_location: true }, { text: "Canel" }],
+      ],
+    },
+  };
+  return bot.sendMessage(msg.chat.id, "Manzilingizni kiriting", option);
+});
